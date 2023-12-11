@@ -34,7 +34,6 @@ build:
     - cd $BUILD_DIR
     - cmake ..
     - make
-    - ./cmake
   artifacts:
     expire_in: 24 hrs
     paths:
