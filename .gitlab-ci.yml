@@ -9,7 +9,8 @@ gtest-pipeline:
       - local: cicd/gtest-pipeline.yml
 
 post:
-  needs: 
+  script:
+    - echo "All pipelines Executed successfully"
+  needs:
     - simple-pipeline
     - gtest-pipeline
-  
