@@ -1,0 +1,93 @@
+stages:
+  - .pre
+  - build
+  - test
+  - run
+  - .post
+
+variables:
+  BUILD_DIR: "project/build"
+  BUILD_GTEST: "project-gtest-lcov/build"
+
+prepare:
+  stage: .pre
+  script:
+    - mkdir -p $BUILD_DIR
+  artifacts:
+    expire_in: 24 hrs
+    paths:
+      - $BUILD_DIR
+
+prepare-gtest:
+  stage: .pre
+  script:
+    - rm -rf $BUILD_GTEST
+    - mkdir -p $BUILD_GTEST
+  artifacts:
+    expire_in: 24 hrs
+    paths:
+      - $BUILD_GTEST
+
+build:
+  stage: build      
+  script:
+    - cd $BUILD_DIR
+    - cmake ..
+    - make
+    - ./cmake
+  artifacts:
+    expire_in: 24 hrs
+    paths:
+      - $BUILD_DIR
+
+build-gtest:
+  stage: build      
+  script:
+    - cd $BUILD_GTEST
+    - cmake ..
+    - make
+  artifacts:
+    expire_in: 24 hrs
+    paths:
+      - $BUILD_GTEST
+
+test-gtest:
+  stage: test      
+  script:
+    - cd $BUILD_GTEST
+    - ctest
+  artifacts:
+    expire_in: 24 hrs
+    paths:
+      - $BUILD_GTEST
+
+coverage-gtest:
+  needs:
+    - test-gtest
+  stage: test      
+  script:
+    - cd $BUILD_GTEST
+    - ls -la
+    - ./RunAllTests
+    - make coverage
+    - lcov --list coverage.info
+  artifacts:
+    expire_in: 24 hrs
+    paths:
+      - $BUILD_GTEST
+
+run:
+  stage: run
+  script:
+    - cd $BUILD_DIR
+    - ./testCmake
+
+cleanup:
+  stage: .post
+  script:
+    - rm -rf $BUILD_DIR
+
+cleanup-gtest-project:
+  stage: .post
+  script:
+    - rm -rf $BUILD_GTEST
