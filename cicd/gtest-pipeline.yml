@@ -6,9 +6,8 @@ stages:
   - .post
 
 variables:
-  BUILD_DIR: "project/build"
   BUILD_GTEST: "project-gtest-lcov/build"
-  
+
 prepare-gtest:
   stage: .pre
   script:

@@ -1,0 +1,40 @@
+stages:
+  - .pre
+  - build
+  - test
+  - run
+  - .post
+
+variables:
+  BUILD_DIR: "project/build"
+
+prepare:
+  stage: .pre
+  script:
+    - mkdir -p $BUILD_DIR
+  artifacts:
+    expire_in: 24 hrs
+    paths:
+      - $BUILD_DIR
+
+build:
+  stage: build      
+  script:
+    - cd $BUILD_DIR
+    - cmake ..
+    - make
+  artifacts:
+    expire_in: 24 hrs
+    paths:
+      - $BUILD_DIR
+
+run:
+  stage: run
+  script:
+    - cd $BUILD_DIR
+    - ./testCmake
+
+cleanup:
+  stage: .post
+  script:
+    - rm -rf $BUILD_DIR
