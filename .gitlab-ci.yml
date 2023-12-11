@@ -8,3 +8,8 @@ gtest-pipeline:
     include:
       - local: cicd/gtest-pipeline.yml
 
+post:
+  needs: 
+    - simple-pipeline
+    - gtest-pipeline
+  
